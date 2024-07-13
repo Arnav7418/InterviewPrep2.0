@@ -1,0 +1,27 @@
+[
+  {
+    "question": "What is the difference between a list and a tuple in Python?",
+    "answer": "A list is mutable, allowing changes to its elements, while a tuple is immutable, meaning its elements cannot be altered after creation. Lists use square brackets; tuples use parentheses.",
+    "score": 4.0
+  },
+  {
+    "question": "Explain the concept of list comprehension in Python.",
+    "answer": "List comprehension in Python offers a concise way to create lists by embedding a loop within brackets, often including a conditional statement, for cleaner and more readable code.",
+    "score": 3.0
+  },
+  {
+    "question": "How do you handle exceptions in Python?",
+    "answer": "Sorry , I dont know",
+    "score": 0
+  },
+  {
+    "question": "What are decorators in Python and how do you use them?",
+    "answer": "No",
+    "score": 0
+  },
+  {
+    "question": "Explain the difference between `__init__` and `__new__` methods in Python classes.",
+    "answer": "In Python classes, __new__ is a static method responsible for creating a new instance of the class, while __init__ initializes the instance after it's created, setting attributes and other initial setup.",
+    "score": 4.0
+  }
+]

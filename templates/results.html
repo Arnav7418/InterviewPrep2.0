@@ -1,0 +1,140 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .score-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+        .score-box {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .chart-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .analysis {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        ul {
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Results</h1>
+    
+    <div class="score-container">
+        <div class="score-box">
+            <h2>Technical Score</h2>
+            <div class="score-value">{{ technical_score|round(2) }}/5</div>
+        </div>
+        <div class="score-box">
+            <h2>Emotional Score</h2>
+            <div class="score-value">{{ emotion_score|round(2) }}/5</div>
+        </div>
+        <div class="score-box">
+            <h2>Combined Score</h2>
+            <div class="score-value">{{ combined_score|round(2) }}/5</div>
+        </div>
+    </div>
+    <h2 class="mb-3">Detailed Results</h2>
+        <div class="accordion" id="resultsAccordion">
+            {% for item in report_data %}
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                        Question {{ loop.index }} - Score: {{ "%.2f"|format(item.score) }}
+                    </button>
+                </h2>
+                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#resultsAccordion">
+                    <div class="accordion-body">
+                        <h5>Question:</h5>
+                        <p>{{ item.question }}</p>
+                        <h5>Your Answer:</h5>
+                        <p>{{ item.answer }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    <div class="chart-container">
+        <h2>Technical Score Distribution</h2>
+        <div id="score_distribution"></div>
+    </div>
+
+    <div class="chart-container">
+        <h2>Combined Score Gauge</h2>
+        <div id="score_gauge"></div>
+    </div>
+
+    <div class="chart-container">
+        <h2>Emotional State</h2>
+        <div id="emotions_pie"></div>
+    </div>
+
+    <div class="analysis">
+        <h2>Performance Analysis</h2>
+        <p>{{ performance_comment }}</p>
+        <h3>Emotional Insights:</h3>
+        <ul>
+        {% for analysis in emotion_analysis %}
+            <li>{{ analysis }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Add Bootstrap JS and its dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        var score_distribution = {{ score_distribution|safe }};
+        var score_gauge = {{ score_gauge|safe }};
+        var emotions_pie = {{ emotions_pie|safe }};
+
+        Plotly.newPlot('score_distribution', score_distribution.data, score_distribution.layout);
+        Plotly.newPlot('score_gauge', score_gauge.data, score_gauge.layout);
+        Plotly.newPlot('emotions_pie', emotions_pie.data, emotions_pie.layout);
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Developer Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Python Developer Test</h1>
+        <div id="question-container" class="mb-4">
+            <h3 id="question-text"></h3>
+            <p>Difficulty: <span id="difficulty"></span></p>
+            <p>Topic: <span id="topic"></span></p>
+            <textarea id="answer-input" class="form-control mb-3" rows="5" placeholder="Type your answer here..."></textarea>
+        </div>
+        <button id="submit-answer" class="btn btn-primary me-2">Submit Answer</button>
+        <button id="next-question" class="btn btn-secondary me-2">Next Question</button>
+        <form action="{{ url_for('end_test') }}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-danger">End Test</button>
+        </form>
+    </div>
+
+    <video id="camera-feed" style="display: none;"></video>
+
+    <script>
+        let currentQuestionId = 0;
+        const totalQuestions = {{ total_questions }};
+
+        function loadQuestion(id) {
+            $.get(`/question/${id}`, function(data) {
+                $('#question-text').text(data.question_text);
+                $('#difficulty').text(data.difficulty_level);
+                $('#topic').text(data.topic);
+                $('#answer-input').val('');
+            });
+        }
+
+        $('#submit-answer').click(function() {
+            const answer = $('#answer-input').val().trim();
+            if (answer) {
+                $.ajax({
+                    url: '/submit_answer',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        question_id: currentQuestionId,
+                        answer: answer
+                    }),
+                    success: function(response) {
+                        alert('Answer submitted successfully!');
+                    }
+                });
+            } else {
+                alert('Please enter an answer before submitting.');
+            }
+        });
+
+        $('#next-question').click(function() {
+            currentQuestionId = (currentQuestionId + 1) % totalQuestions;
+            loadQuestion(currentQuestionId);
+        });
+
+        // Function to start the camera
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    var video = document.getElementById('camera-feed');
+                    video.srcObject = stream;
+                    video.play();
+                    console.log("Camera started successfully");
+                })
+                .catch(function(err) {
+                    console.log("An error occurred: " + err);
+                });
+        }
+
+        // Initialize
+        $(document).ready(function() {
+            loadQuestion(currentQuestionId);
+            startCamera();
+        });
+    </script>
+</body>
+</html>
